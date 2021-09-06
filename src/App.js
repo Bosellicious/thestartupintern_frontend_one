@@ -15,7 +15,7 @@ import About from './components/About'
   useEffect(() => {
     const getTasks =async () => {
       const tasksFromServer  = await fetchTasks()
-      setTasks(tasksFrromServer)
+      setTasks(tasksFromServer)
     }
     
 
@@ -24,7 +24,7 @@ import About from './components/About'
     
   // fetch Tasks
   const fetchTasks =async() =>{
-    const res =await fetch ('http://localhpost:5000/')
+    const res =await fetch ('http://localhost:5000/tasks')
     const data = await res.json()
 
 
@@ -33,7 +33,7 @@ return data
   
 
     // Add Task
-    const addTask =(task) =>{
+    const addTask = async (task) =>{
       const res= await fetch ('http://localhost:5000/tasks', {
         method:'POST',
         headers: {
@@ -45,7 +45,7 @@ return data
 
       const data = await res.json()
 
-      setTasks([... task, data])
+      setTasks([...tasks, data])
       
       //  const id= Math.floor(Math.random() *
       // 10000) + 1
@@ -67,8 +67,8 @@ return data
 
     // Toggle Reminder
     const toggleReminder = async (id) => {
-      const taskToToggle = await fetchTask(id)
-      const updTask = { ... taskToToggle, 
+      const taskToToggle = await fetchTasks(id)
+      const updTask = { ...taskToToggle, 
       reminder: !taskToToggle.reminder}
 
       const res = await  fetch(`http://localhost:5000/tasks${id}`, {
@@ -99,18 +99,14 @@ return data
          showAdd={showAddTask} 
          />
       
-      <Route path='/' exact render={(props) 
-      =>(
+      <Route path='/' exact render={(props) =>(
         <>
-        {showAddTask && <AddTask onAdd={addTask} />}
-      {tasks.length > 0 ? (
-         <Tasks tasks={tasks} onDelete=
-         {deleteTask} onToggle={toggleReminder}/>
-         
-      ) : (
-        'No Tasks To Show'
-      )}
-
+          {showAddTask && <AddTask onAdd={addTask} />}
+          {tasks.length > 0 ? (
+            <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/>
+          ) : (
+            'No Tasks To Show'
+          )}
         </>
       )} />
       <Route path='/about' component={About}/>
